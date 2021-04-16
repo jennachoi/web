@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calendar.html</title>
+    <style>
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <script>
+        var month = 5;
+        
+        var today = new Date(2021, (month-1), 1);
+        console.log(today.getDay());
+        var lastDay = new Date(2021, month, 0);
+        console.log(lastDay.getDate());
+
+        // 요일 타이틀
+        var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat']
+        var tbl = '<table border="1"><tr>';
+            for(day of days) {
+                tbl += '<th>' + day + '</th>';
+            }
+        tbl += '</tr><tr>';
+
+        //날짜 반복
+        for (var i = 1; i <= today.getDay(); i++) {
+            tbl += '<td></td>';   
+        }
+        for (var i = 1; i <= lastDay.getDate(); i++) {
+            tbl += '    <td>' + i + '</td>';
+            if (i % 7 == 7-today.getDay()) {
+                tbl += '</tr><tr>';
+            }
+        }
+
+        tbl += '</tr>';
+        tbl += '</table>';
+        document.write('<h1>'+month+'월</h1>');
+        document.write(tbl);
+    </script>
+</body>
+
+</html>
