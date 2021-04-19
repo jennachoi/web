@@ -1,3 +1,10 @@
+
+/* <div>Hello</div>
+   <div><a href="www.daum.net">다음페이지</a></div>
+                  element노드  텍스트노드 
+ 이렇게 되어있으면 a태그는 div의 자식태그. 감싸고 있으면 자식임 -->
+*/
+
 var h1Tag = document.createElement('h1');
 h1Tag.innerHTML = 'hello';
 console.log(h1Tag);
