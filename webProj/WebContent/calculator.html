@@ -77,8 +77,8 @@
             var touchVal = this.innerHTML;
             // dp.innerHTML = parseInt(touchVal); // 숫자를 누를때 제일 앞의 0을 없애주기
 
-            if (isNaN(touchVal)) { // 값이 문자라면(*,/,+,-,=,C) 
-                if (touchVal == 'C') {
+            if (isNaN(touchVal)) { 
+            if (touchVal == 'C') { // 값이 문자라면(*,/,+,-,=,C) 
                     firstVal = 0;
                     lastVal = 0;
                     oper = null;
