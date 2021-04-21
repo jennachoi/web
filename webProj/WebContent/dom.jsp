@@ -15,4 +15,4 @@
 	out.print("<li>" + score + "</li>");
 	out.print("<li>" + gender + "</li>");
 	out.print("</ul>");
-%>
+%> 
