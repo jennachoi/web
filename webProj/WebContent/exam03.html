@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exam03.html</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // console.log(xhtp.responseXML);
+        });
+    </script>
+</head>
+
+<body>
+    <div id="show"></div>
+    <script>
+        var xhtp = new XMLHttpRequest();
+        xhtp.open('get', 'employees.xml')
+        xhtp.send();
+        xhtp.onreadystatechange = function () {
+            if (xhtp.readyState == 4 && xhtp.status == 200) {
+                var doc = xhtp.responseXML;
+                var records = xml.getElementsByTagName('record');
+                
+                var table = document.createElement('table');
+                table.setAttribute('border', '1');
+
+                //레코드 갯수만큼 반복
+                for (var j = 0; j < records.length; j++) {
+                    var tr = document.createElement('tr');
+                }
+                // 데이터 한건의 하위 요소들
+                for (var i = 0; i < list[j].children.length; i++) {
+                    var td = document.createElement('td');
+                    var text1 = document.createTextNode(records[i].child[0].innerHTML);
+                    var text2 = document.createTextNode(records[i].children[1].innerHTML);
+                    var text3 = document.createTextNode(records[i].children[5].innerHTML);
+                    td.appendChild(text);
+                    td.appendChild(text1);
+                    td.appendChild(text2);
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+            document.getElementById('show').appendChild(table);
+
+        }
+    </script>
+</body>
+
+</html>
