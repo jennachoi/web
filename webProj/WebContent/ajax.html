@@ -1,28 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ajax.html</title>
-</head>
-<body>
-	<form action="empList.do" method="POST">
-		<label>LastName: <input type="text" name="last_name" id="" size="20"> </label><br>
-		<label>Email: <input type="text" name="email" id="" size="20"> </label><br>
-		<label>hireDate: <input type="text" name="hire_date" id="" size="20"> </label><br>
-		<label>JobId: <input type="text" name="job_id" id="" size="20"> </label><br>
-		<input type="submit" value="저장">
-		<input type="reset" value="취소">
-		<br>
-	</form>
 
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ajax.html</title>
+	<style>
+		fieldset {
+		width: 350px;
+		text-align: center; 
+		line-height: 30px;
+		}
+		table {
+		width: 650px; 
+		border: solid;
+		}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var frm = document.getElementById('frm');
+			frm.addEventListener('submit', function (e) {
+				e.preventDefault();
+				console.log(e);
+				var fn = document.getElementById('first_name').value;
+				var ln = document.getElementById('last_name').value;
+				var em = document.getElementById('email').value;
+				var hd = document.getElementById('hire_date').value;
+				var ji = document.getElementById('job_id').value;
+				var sa = document.getElementById('salary').value;
+				var data = 'first_name=' + fn + '&last_name=' + ln + '&email=' + em +
+					'&hire_date=' + hd + '&job_id=' + ji + '&salary=' + sa;
+				var xhtp = new XMLHttpRequest();
+				xhtp.open('post', 'empList.do');
+				xhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+				xhtp.send(data);
+
+				xhtp.onreadystatechange = function () {
+					if (xhtp.readyState == 4 && xhtp.status == 200) {
+
+						var obj = JSON.parse(xhtp.responseText);
+
+						var tbl = document.getElementById('tbl');
+						var tr = document.createElement('tr');
+						for (var field in obj) {
+							var td = document.createElement('td');
+							var text = document.createTextNode(obj[field]);
+
+							td.appendChild(text);
+							tr.appendChild(td);
+						}
+
+						var btn = document.createElement('button');
+						btn.innerHTML = '삭제';
+						btn.onclick = function () {
+							this.parentNode.parentNode.remove();
+						}
+						var td = document.createElement('td');
+						td.appendChild(btn);
+						tr.appendChild(td);
+						document.getElementById('tbl').appendChild(tr);
+					}
+				}
+			})
+		})
+	</script>
+</head>
+
+<body>
+	<fieldset>
+		<legend>새 사원 입력</legend>
+		<form id="frm" action="empList.do" method="POST">
+			<label>FirstName: <input type="text" name="first_name" id="first_name" size="20">
+			</label><br>
+			<label>LastName: <input type="text" name="last_name" id="last_name" size="20">
+			</label><br> <label>Email: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="email" id="email"
+					size="20">
+			</label><br> <label>hireDate: &nbsp;&nbsp;<input type="date" name="hire_date" id="hire_date" size="20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</label><br> <label>Job Id: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="job_id" id="job_id" size="20">
+			</label><br> <label>Salary: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="salary" id="salary" size="20">
+			</label><br><input type="submit" value="저장"> <input type="reset" value="취소"> <br>
+		</form>
+	</fieldset>
 
 
 	<div id="show"></div>
 	<script>
 		var xhtp = new XMLHttpRequest();
-		xhtp.onreadystatechange = function() {
+
+		var title = {
+			employeeId: '사원번호',
+			firstname: '이름',
+			lastname: '성',
+			email: '이메일',
+			hireDate: '입사일자',
+			jobId: '직무',
+			salary: '급여',
+			func: '기능',
+		}
+		xhtp.onreadystatechange = function () {
 			// readyState : 
 			// 1 => connection.  연결
 			// 3 => processing requested. 처리중
@@ -33,21 +109,41 @@
 				var show = document.getElementById('show');
 				var obj = JSON.parse(xhtp.responseText);
 				console.log(obj);
-				
+
 				// table tr td => div.appendChild();
 				var table = document.createElement('table');
-				table.setAttribute('border', '1');
+				table.setAttribute('id', 'tbl');
+				table.setAttribute('rules', 'all');
+
+				// title
+				var tr = document.createElement('tr');
+				for (var field in title) {
+					var td = document.createElement('th');
+					var text = document.createTextNode(title[field]);
+					td.appendChild(text);
+					tr.appendChild(td);
+				}
+				table.appendChild(tr);
 
 				// 배열의 갯수만큼 반복해서 tr을 생성
-				for(var data of obj) {
+				for (var data of obj) {
 					var tr = document.createElement('tr');
 					//field 갯수만큼 반복해서 td를 생성 
-					for (var field in data) { 
+					for (var field in data) {
 						var td = document.createElement('td');
 						var text = document.createTextNode(data[field]);
 						td.appendChild(text);
 						tr.appendChild(td);
 					}
+					var btn = document.createElement('button');
+					btn.innerHTML = '삭제';
+					btn.onclick = function () {
+						this.parentNode.parentNode.remove();
+					}
+
+					var td = document.createElement('td');
+					td.appendChild(btn);
+					tr.appendChild(td);
 					table.appendChild(tr);
 				}
 				// div#show의 자식으로 table을 붙여준다. 
@@ -58,4 +154,5 @@
 		xhtp.send();
 	</script>
 </body>
+
 </html>
