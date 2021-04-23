@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jq_selec2_1.html</title>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $("#menu>li:first").css({
+                "background-color": "#FF0"
+            });
+            $(".menu>li:even").css({ // 홀수만odd, 짝수만 even
+                "background-color": "#FF0"
+            });
+            $("#menu>li:nth-child(3)").css({ // 타입 상관없이 n번째 차일드 (인덱스 값 아니고 순번임)
+                "background-color": "#FF0"
+            });
+            $("li:nth-of-type(3)").css({ // of타입 : 같은 타입의 3번째
+                "background-color": "#FF0"
+            });
+
+            $("#menu li").last().css({
+                "background-color": "#0FF"
+            });
+            $("li:gt(2)").css({ // gt:2번째보다 큰것만, lt:작은것
+                "background-color": "#0FF"
+            });
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <h1>탐색 선택자</h1>
+    <ul id="menu">
+        <li>내용1</li>
+        <li>내용2</li>
+        <!-- <p>content2</p> -->
+        <li>내용3</li>
+        <li>내용4</li>
+    </ul>
+    <ul class="menu">
+        <li>내용1</li>
+        <li>내용2</li>
+        <li>내용3</li>
+        <li>내용4</li>
+    </ul>
+    <ul class="last">
+        <li>내용1</li>
+        <li>내용2</li>
+        <li>내용3</li>
+        <li>내용4</li>
+    </ul>
+</body>
+
+</html>

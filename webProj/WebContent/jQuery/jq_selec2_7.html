@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jq_selec2_7.html</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>></script>
+    <script>
+
+        // let num1 = 10;      // let 변수를 똑같이 두번 못씀. var보다 조금 더 체크해줌. 
+        // { 
+        //     let num1 = 20;  // block레벨 안에서는 정의 가능
+        //     console.log(num1);
+        // }
+        // num1 = 30;
+        // console.log(num1);
+
+        // const num1 = 10;  // 상수로 선언. 한번 선언하면 변경 못함 
+
+        const num1 = { 
+            name: 'Hong',
+            age: 10,
+        };
+        
+        const num2 = { 
+            name: 'Hwang',
+            age: 15,
+        };
+        
+        const num3 = { 
+            name: 'Park',
+            age: 20,
+        };
+
+        const numbers = [num1, num2, num3];
+        
+        $(numbers).each(function(idx, val) {   // jQuery로 작성한 배열 반복문
+            console.log(idx, val.name, val.age);
+        });
+
+        const names = $(numbers).map(function(a, b) {
+            console.log(a, b);
+            return b.name;
+        });
+        console.log(names);
+
+        const ages = $.grep(numbers, function(val, idx) {    // 그랩은 val, idx의 순서
+            console.log(val, idx);
+            return val.age == 15;
+        });
+        console.log(ages);
+
+
+        // var num1 = 20;        // 전역변수
+        // function variableFunc() {
+        //     var num1;  //func안에서만 의미있는 변수
+        // }
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
