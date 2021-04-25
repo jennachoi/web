@@ -74,24 +74,15 @@ table {
 	<fieldset>
 		<legend>새 사원 입력</legend>
 		<form id="frm" action="empList.do" method="POST">
-			<label>FirstName: <input type="text" name="first_name"
-				id="first_name" size="20">
-			</label><br> <label>LastName: <input type="text"
-				name="last_name" id="last_name" size="20">
-			</label><br> <label>Email: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
-				type="text" name="email" id="email" size="20">
-			</label><br> <label>hireDate: &nbsp;&nbsp;<input type="date"
-				name="hire_date" id="hire_date" size="20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			</label><br> <label>Job Id: &nbsp;&nbsp;&nbsp;&nbsp;<input
-				type="text" name="job_id" id="job_id" size="20">
-			</label><br> <label>Salary: &nbsp;&nbsp;&nbsp;&nbsp;<input
-				type="text" name="salary" id="salary" size="20">
-			</label><br> <input type="submit" value="저장"> <input
-				type="reset" value="취소"> <br>
+			<label>FirstName: <input type="text" name="first_name" id="first_name" size="20"></label><br> 
+			<label>LastName: <input type="text" name="last_name" id="last_name" size="20"></label><br> 
+			<label>Email: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="email" id="email" size="20"></label><br> 
+			<label>hireDate: &nbsp;&nbsp;<input type="date" name="hire_date" id="hire_date" size="20"></label><br> 
+			<label>Job Id: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="job_id" id="job_id" size="20"></label><br> 
+			<label>Salary: &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="salary" id="salary" size="20"></label><br> 
+			<input type="submit" value="저장"> <input type="reset" value="취소"> <br>
 		</form>
 	</fieldset>
-
-
 	<div id="show"></div>
 	<script>
 		var xhtp = new XMLHttpRequest();
@@ -129,8 +120,8 @@ table {
 				var tr = $('<tr />');	//var tr = document.createElement('tr');
 				for (var field in title) {
 					var td = $('<th />').html(title[field]); //var td = document.createElement('th');
-															 //var text = document.createTextNode(title[field]);
-				//	td.appendChild(text); jquery로 한문장으로 적어줬기 때문에 다시 어펜드할 필요 없음. 
+					//var text = document.createTextNode(title[field]);
+					//td.appendChild(text); jquery로 한문장으로 적어줬기 때문에 다시 어펜드할 필요 없음. 
 					tr.append(td);
 				}
 				table.append(tr);
