@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery/each3.html</title>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '../MOCK_DATA.json',
+                dataType: 'json', // 타입 지정 안해도 알아서 불러와줌 
+                success: successCallFnc,
+                error: errorCallFnc
+            }); //XMLHttpRequest();
+        })
+
+        function successCallFnc(result) {
+            let tbl = $('<table />');
+            tbl.attr('border', '1');
+            $.each(result, function (i, o) { //i:인덱스, o:값
+                let trTag = $('<tr />'); // row 생성
+                trTag.attr('id', o.id);
+                trTag.mouseover(overFnc);
+                trTag.mouseout(outFnc);
+                let btn = $('<button />').html('Del');
+                btn.click((evnt) => { 
+                    console.log($(this),evnt); 
+                    // $(this) => function: event 대상, arrow fnc: object
+                    evnt.currentTarget.parentNode.parentNode.remove();
+                    // currentTarget : 버튼
+                });
+                trTag.append( // append와 ,로 하위요소 한꺼번에 붙여준다
+                    $('<td />').html(o.id),
+                    $('<td />').html(o.first_name),
+                    $('<td />').html(o.last_name),
+                    $('<td />').html(o.email),
+                    $('<td />').append(btn)
+                );
+                tbl.append(trTag);
+            });
+            $('#show').append(tbl);
+        }
+
+        function errorCallFnc() {
+            console.error(reject);
+        }
+
+        function clickFnc() {
+            alert($(this).attr('id')); // attr에 속성을 하나만 적어준다면 id값을 불러오라는 의미! 
+        }
+
+        function overFnc() {
+            $(this).css('background-color','yellow');
+        }
+        
+        function outFnc() {
+            $(this).css('background-color','');
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id="show"></div>
+</body>
+
+</html>
