@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jq_selec3_9.html</title>
+<script src="../js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+	<div class="box1">
+		<p>내용1</p>
+		<p>내용2</p>
+	</div>
+	<div class="box2">
+		<p>내용3</p>
+		<p>내용4</p>
+	</div>
+	<div class="box3">
+		<p>내용5</p>
+		<p>내용6</p>
+	</div>
+	<script>
+		let clon = $('.box1').children().clone(); // 하위 요소인 <p>들만 카피한다
+		console.log(clon);
+		$('.box2').empty(); // empty()는 요소 자체는 냅두고 하위요소를 삭제해줌. remove()는 아예 다 삭제 
+		$('.box3').remove(); // empty()는 요소 자체는 냅두고 하위요소를 삭제해줌. remove()는 아예 다 삭제 
+
+		$('.box2').append(clon);
+	</script>
+</body>
+</html>
