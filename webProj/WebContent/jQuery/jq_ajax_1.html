@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jq_ajax_1.html</title>
+<script src="../js/jquery-3.6.0.min.js"></script>
+<script>
+	$(function() {   // 전체페이지를 불러온 다음에 이 부분을 실행하라는 의미임
+		// https://api.jquery.com/load/ 요기서 로드 메소드에 대한 설명 참고하셈.
+		$('#show').load('jq_selec1_10.html div#wrap',  // (url로 작성)이 페이지를 불러와 보겟슴다
+				function(a, b, c) {  // a: response Text, b: textStatus, c: XML
+				console.log(a, b, c);
+				}
+		); 
+	});
+</script>
+</head>
+<body>
+	<div id='show'></div>
+</body>
+</html>
