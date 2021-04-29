@@ -8,27 +8,106 @@
 	// jQuery.ajax https://api.jquery.com/jquery.ajax/#jQuery-ajax-url-settings
 
 	$(function() {
+		//회원리스트 보여주기. 
 		$.ajax({
-			url : '../ajax.do',
-			type : 'get', // get or post 방식으로 요청
-			data : 'p1=hello&p2=nice',
-			dataType : 'html',
-			success : function(resolve) {
-				console.log(resolve);
-			},
+			url : 'memberServlet.do',
+			ype : 'get', // get or post 방식으로 요청
+			dataType : 'json',
+			success : showList,
 			error : function(reject) {
-				// window.alert(`에러코드 : ${reject.status} 관리자에게 문의하세요`);
+				window.alert(`에러코드 : ${reject.status} 관리자에게 문의하세요`);
 				console.error(`에러코드: ${reject.status}, 에러메시지: ${reject.statusText}`);
 			}
-
 		});
-	});
+		
+		//입력 작업도 ajax로 처리해보자. 
+		$('#frm').on('submit',function (e){   // #frm에 submit 이벤트가 실행 되면! 
+			e.preventDefault();  // submit원래 기능과 서블릿 페이지로의 이동을 막고 Ajax로 호출하겠다
+			$.ajax({
+				url: $('#frm').attr('action'), // = 그냥 'memberServlet.do'만 적는 것과 같음
+				data: 'm_id=' + $('#m_id').val() +  // key=val&key2=val2&...의 형식으로 적어주는거지~
+					  '&m_name=' + $('#m_name').val() + 
+					  '&m_age=' + $('#m_age').val() ,
+				dataType: 'json',
+				type: 'post',
+				success: createRow,
+				error: function(err) {
+					console.error(err);
+				}
+			});
+		});
+	})
+	
+	function showList(resolve){
+		console.log(resolve);
+		let title = {};
+		title.id = '아이디';
+		title.name = '이름';
+		title.age = '나이';
+		title.fn = '삭제';
+		
+		let $table = $('<br><table id="tbl"/>')
+						.attr('border','1')
+						.css({'border-collapse':'collapse',
+							  'width':'200px' });
+		
+		let $tr = $('<tr />').append(
+			$('<th />').html(title.id),
+			$('<th />').html(title.name),	
+			$('<th />').html(title.age),	
+			$('<th />').html(title.fn));	
+			$table.append($tr);
+			
+		for (let i=0; i < resolve.length; i++) {
+			let delBtn = $('<button />').html('삭제');
+			delBtn.click(deleteRow);
+			let $tr = $('<tr />').append(
+			$('<td />').html(resolve[i].id),
+			$('<td />').html(resolve[i].name),
+			$('<td />').html(resolve[i].age),
+			$('<td />').append(delBtn));
+			$table.append($tr);
+			}
+		$('#show').append($table);
+		}
+
+	//신규 입력 데이터 화면에 출력
+	function createRow(data){
+		console.log(data);
+		let delBtn = $('<button />').html('삭제');
+		delBtn.click(deleteRow);
+		let $tr = $('<tr />').append(
+				$('<td />').html(data.id),
+				$('<td />').html(data.name),	
+				$('<td />').html(data.age),	
+				$('<td />').append(delBtn));	
+		$('#tbl').append($tr);
+	}
+	
+	function deleteRow() {
+		console.log(this); // this는 이벤트가 발생하고 있는 삭제버튼임
+		let id = $(this).parent().parent().children().eq(0).html();  // 삭제버튼을 클릭한 행의 id를 가져오기
+		let delTr = $(this).parent().parent();
+		// DB에서 삭제
+		$.ajax({
+			url: '../MemberDelServlet',
+			data: 'mid='+id,
+			success: function() {
+				console.log('삭제후 처리');
+				// 화면에서 삭제도 DB에서 삭제가 되어야 하니까 이 위치에 작성. 
+				delTr.remove();
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		});
+	}
 </script>
 </head>
 <body>
-	<form action='memberServlet.do' method='post'>
-		ID   : <input type='number' name='m_id' id='m_id' value=1 /> <br>
-		이름 : <input type='text' name='m_name' id='m_name' value='hong'/> <br>
+	<form id = "frm" action='memberServlet.do' method='post'>
+		ID : <input type='number' name='m_id' id='m_id' value=1 /> <br>
+		이름 : <input type='text' name='m_name' id='m_name' value='hong' /> <br>
 		나이 : <input type='number' name='m_age' id='m_age' value=20 /> <br>
 		<input type='submit' value='저장'>
 	</form>
