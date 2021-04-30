@@ -8,6 +8,7 @@ public class Employee {
 	private int salary;
 	private String hireDate;
 	private String jobId;
+	private String phoneNumber;
 
 	public int getEmployeeId() {
 		return employeeId;
@@ -63,6 +64,14 @@ public class Employee {
 
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }

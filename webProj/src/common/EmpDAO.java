@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmpDAO { // DB에서 데이터를 가져오는 작업
 	Connection conn;
@@ -168,5 +170,86 @@ public class EmpDAO { // DB에서 데이터를 가져오는 작업
 		}
 		return employees;
 	}
+	
+	//empl_demo
+	
+	public List<Employee> getEmployeeList() {
+		// 사원정보를 가지고오는 처리
+		String sql = "select * from empl_demo order by employee_id";
+		conn = DBCon.getConnect();
+		List<Employee> employees = new ArrayList<Employee>();
 
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				Employee emp = new Employee();
+				emp.setEmployeeId(rs.getInt("employee_id"));
+				emp.setFirstName(rs.getString("first_name"));
+				emp.setLastName(rs.getString("Last_name"));
+				emp.setEmail(rs.getString("email"));
+				emp.setHireDate(rs.getString("hire_date"));
+				emp.setJobId(rs.getString("job_id"));
+				emp.setSalary(rs.getInt("salary"));
+				emp.setPhoneNumber(rs.getString("phone_number"));
+
+				employees.add(emp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return employees;
+	}
+	
+	// 구글 차트에 쓸 서블릿 map 타입으로 적어주기
+	public Map<String, Integer> getEmployeeByDept() {
+		// 부서명, 사원수 가져오기
+		Map<String, Integer> map = new HashMap<>();
+		
+		String sql = "select d.department_name, count(1)\r\n"
+				+ "from empl_demo e, departments d\r\n"
+				+ "where e.department_id = d.department_id\r\n"
+				+ "group by d.department_name";
+		conn = DBCon.getConnect();
+		
+		try {
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				map.put(rs.getString(1), rs.getInt(2));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return map;
+	}
 }
