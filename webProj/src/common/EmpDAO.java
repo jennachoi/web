@@ -77,23 +77,15 @@ public class EmpDAO { // DB에서 데이터를 가져오는 작업
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				if (psmt != null) {
-					psmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close();
 		}
 
 	}
 
 	public List<Employee> getEmpByDept(String dept) {
 		// 사원정보를 가지고오는 처리
-		String sql = "select employee_id, first_name, last_name, email, to_char(hire_date, 'YYYY/MM/DD') as hire_date, job_id, salary from emp_temp where department_id = " + dept + "order by employee_id";
+		String sql = "select employee_id, first_name, last_name, email, to_char(hire_date, 'YYYY/MM/DD') as hire_date, job_id, salary from emp_temp where department_id = "
+				+ dept + "order by employee_id";
 		conn = DBCon.getConnect();
 		List<Employee> employees = new ArrayList<Employee>();
 
@@ -109,24 +101,15 @@ public class EmpDAO { // DB에서 데이터를 가져오는 작업
 				emp.setHireDate(rs.getString("hire_date"));
 				emp.setJobId(rs.getString("job_id"));
 				emp.setSalary(rs.getInt("salary"));
-				
+
 				employees.add(emp);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				} 
-				if (stmt != null) {
-					stmt.close();
-				}
-			} 
-			catch (SQLException e) {
-			e.printStackTrace();
-			}
-		} return employees;
+			close();
+		}
+		return employees;
 
 	}
 
@@ -154,25 +137,13 @@ public class EmpDAO { // DB에서 데이터를 가져오는 작업
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close();
 		}
 		return employees;
 	}
-	
-	//empl_demo
-	
+
+	// empl_demo
+
 	public List<Employee> getEmployeeList() {
 		// 사원정보를 가지고오는 처리
 		String sql = "select * from empl_demo order by employee_id";
@@ -198,58 +169,119 @@ public class EmpDAO { // DB에서 데이터를 가져오는 작업
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close();
 		}
 		return employees;
 	}
-	
+
 	// 구글 차트에 쓸 서블릿 map 타입으로 적어주기
 	public Map<String, Integer> getEmployeeByDept() {
 		// 부서명, 사원수 가져오기
 		Map<String, Integer> map = new HashMap<>();
-		
-		String sql = "select d.department_name, count(1)\r\n"
-				+ "from empl_demo e, departments d\r\n"
-				+ "where e.department_id = d.department_id\r\n"
-				+ "group by d.department_name";
+
+		String sql = "select d.department_name, count(1)\r\n" + "from empl_demo e, departments d\r\n"
+				+ "where e.department_id = d.department_id\r\n" + "group by d.department_name";
 		conn = DBCon.getConnect();
-		
+
 		try {
 			psmt = conn.prepareStatement(sql);
 			rs = psmt.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				map.put(rs.getString(1), rs.getInt(2));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close();
 		}
 		return map;
 	}
+
+	// 스케줄 정보를 가지고 오는 메소드.
+	public List<ScheduleVO> getScheduleList() {
+		conn = DBCon.getConnect();
+		
+		String sql = "Select * from schedule";
+		List<ScheduleVO> list = new ArrayList<>();
+		try {
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+			while (rs.next()) {
+				ScheduleVO vo = new ScheduleVO();
+				vo.setTitle(rs.getString("title"));
+				vo.setStartDay(rs.getString("start_day"));
+				vo.setEndDay(rs.getString("end_day"));
+				list.add(vo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+
+		return list;
+
+	}
+	
+	
+	// 입력한 스케줄 정보를 DB에 기록하는 메소드 (한건 입력)
+	public void insertSchedule(ScheduleVO vo) {
+		conn = DBCon.getConnect();
+
+		String sql = "insert into schedule values(?, ?, ?)";
+		
+		try {
+			stmt = conn.createStatement();
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, vo.getTitle());
+			psmt.setString(2, vo.getStartDay());
+			psmt.setString(3, vo.getEndDay());
+			int r = psmt.executeUpdate();
+			System.out.println(r + "건 입력됨.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+
+	}
+	
+	// 클릭한 스케줄 정보를 DB에 삭제하는 메소드
+	public void DeleteSchedule(ScheduleVO vo) {
+		conn = DBCon.getConnect();
+
+		String sql = "delete from schedule where title=?";
+		
+		try {
+			stmt = conn.createStatement();
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, vo.getTitle());
+			int r = psmt.executeUpdate();
+			System.out.println(r + "건 삭제됨.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	}
+	
+	public void close() {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (psmt != null) {
+				psmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
