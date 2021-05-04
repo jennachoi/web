@@ -1,17 +1,126 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>jQuery/upload.html</title>
 <script src='../js/jquery-3.6.0.min.js'></script>
+<script>
+		$(document).ready(function () {
+			//DB의 데이터를 화면에 출력 <div><table></table></div>
+			$.ajax({
+				url: '../getFileListServlet',
+				dataType: 'json',	// json -> object로 바꿔준다
+				success: function(result) {
+				//테이블을 활용해서 리스트 출력
+					let table = $('<table border="1" />');
+						let trTag = $('<tr />');
+							trTag.append(
+									$('<th />').html("저자"),
+									$('<th />').html("번호"),
+									$('<th />').html("파일명"),
+									$('<th />').html("제목"),
+									$('<th />').html("날짜"));
+							table.append(trTag);
+					
+					for (data of result) {
+						let trTag = $('<tr />');
+						//저자번호파일명제목날짜
+							for (field in data) {
+								trTag.append($('<td />').html(data[field]));
+							}
+						table.append(trTag);
+					}
+					$('#show').append(table);
+				},
+				error: function(err){
+					console.log(err);
+				}
+				
+			});
+			
+			
+			// 파일을 선택하면 이미지가 나타나는 부분
+			$('#filename').change(function(){
+				for(let file of this.files) {
+					$('#img').attr('src', URL.createObjectURL(file));
+				}
+			});
+		
+	
+		//전송을 누르면
+		$('#frm').submit(function(e){
+			e.preventDefault();
+			let frm = document.getElementById('frm');
+			let data = new FormData(frm);
+			for(let k of data.entries()) {
+				console.log(k);				
+			}
+			//비동기 호출 파일 업로드 서블릿
+			$.ajax({
+				contentType: false,
+				processData: false,
+				url: $('#frm').attr('action'),
+				type: 'post',
+				dataType: 'json',
+				data: data,
+				success: function(result) {
+					console.log(result);
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+		});
+	});
+	</script>
+<style>
+#img {
+	width: 180px;
+	height: 220px;
+}
+
+table {
+	border-collapse: collapse;
+}
+</style>
 </head>
+
 <body>
 	<h1>Ajax 파일 업로드</h1>
-	<form id='frm' action='uploadServlet' method='post' enctype='multipart/form-data'> 
-										<!--ㄴ데이터가 서버로 제출될때 인코딩 타입 명시  -->
-	이름 : <input type="text" name="name" value="홍길동">
-	파일 : <input type="file" name="file">
-	<input type="submit">	
+	<form id='frm' action='../fileUploadServlet' method='post'
+		enctype='multipart/form-data'>
+		<!--ㄴ데이터가 서버로 제출될때 인코딩 타입 명시  -->
+		<table border="1">
+			<tr>
+				<td><label for="num">번호</label></td>
+				<td><input type="text" name="num" id="num"></td>
+				<td rowspan="4"><img src="" alt="선택한 파일" id='img'></td>
+			</tr>
+			<tr>
+				<td><label for="author">저자</label></td>
+				<td><input type="text" name="author" id="author"></td>
+			</tr>
+			<tr>
+				<td><label for="title">제목</label></td>
+				<td><input type="text" name="title" id="title"></td>
+			</tr>
+			<tr>
+				<td><label for="filename">파일첨부</label></td>
+				<td><input type="file" name="filename" id="filename"></td>
+			</tr>
+			<tr>
+				<td colspan="3"><input type="submit"><input
+					type="reset"></td>
+			</tr>
+		</table>
+		<!-- 
+	이름 : <input type="text" name="name" value="홍길동"><br>
+	파일 : <input type="file" name="file1"><br>
+	파일 : <input type="file" name="file2"><br>
+	<input type="submit">	 -->
+		<br><div id='show'></div>
 	</form>
 </body>
+
 </html>
