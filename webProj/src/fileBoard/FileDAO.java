@@ -103,8 +103,9 @@ public class FileDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-
+		} finally {
+			close();
+		} 
 		return file;
 	}
 
@@ -124,6 +125,28 @@ public class FileDAO {
 		}
 		return vo;
 	}
+	
+	public boolean updateFile(FileVO vo) {
+		conn = DBCon.getConnect();
+		int modifyCnt = 0;
+		String sql = "UPDATE file_board SET author=?, title=?, file_name=? WHERE num=?";
+		
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, vo.getAuthor());
+			psmt.setString(2, vo.getTitle());
+			psmt.setString(3, vo.getFileName());
+			psmt.setInt(4, vo.getNum());
+			modifyCnt = psmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return modifyCnt == 0? false : true; // 수정이 되었으면 true, 아니면 false를 리턴 
+	}
+	
+	
 
 	public void close() {
 		try {

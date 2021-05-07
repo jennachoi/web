@@ -5,6 +5,16 @@
 <meta charset="UTF-8">
 <title>jQuery/upload.html</title>
 <script src='../js/jquery-3.6.0.min.js'></script>
+<style>
+#img {
+	width: 180px;
+	height: 220px;
+}
+
+table {
+	border-collapse: collapse;
+}
+</style>
 <script>
 	$(document).ready(function () {
 		//DB의 데이터를 화면에 출력 <div><table></table></div>
@@ -41,6 +51,21 @@
 				
 		});
 		
+		
+		// 테이블의 타이틀
+		function getTitle() {
+			let $title = $('<tr />');
+			$title.append(
+				$('<th />').html('번호'),		
+				$('<th />').html('제목'),		
+				$('<th />').html('저자'),		
+				$('<th />').html('파일명'),		
+				$('<th />').html('날짜'),		
+				$('<th />').html('삭제'),		
+			);
+			return $title;
+		}
+		
 		// 삭제 버튼
 		function deleteRow(e) {
 			e.preventDefault();
@@ -48,21 +73,21 @@
 			let num = $(this).parent().parent().children().eq(0).html();
 			console.log(num);
 			let delTr = $(this).parent().parent();
-		// DB에서 삭제
-		$.ajax({
-			url: '../fileDeleteServlet',
-			data: 'num=' + num,
-			type: 'get',
-			success: function() {
-				console.log('삭제후 처리');
-				// 화면에서 삭제도 DB에서 삭제가 되어야 하니까 이 위치에 작성. 
+			// DB에서 삭제
+			$.ajax({
+				url: '../fileDeleteServlet',
+				data: 'num=' + num,
+				type: 'get',
+				success: function() {
+					console.log('삭제후 처리');
+					// 화면에서 삭제도 DB에서 삭제가 되어야 하니까 이 위치에 작성. 
 				delTr.remove();
-			},
-			error: function(err) {
-				console.log(err);
-			}
-		});
-	}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+		}	
 		
 		// 링크 클릭했을 때 callback
 		function linkClickCallBack(e){
@@ -93,20 +118,6 @@
 				},
 			});
 		}
-		
-		// 테이블의 타이틀
-		function getTitle() {
-			let $title = $('<tr />');
-			$title.append(
-				$('<th />').html('번호'),		
-				$('<th />').html('제목'),		
-				$('<th />').html('저자'),		
-				$('<th />').html('파일명'),		
-				$('<th />').html('날짜'),		
-				$('<th />').html('삭제'),		
-			);
-			return $title;
-		}
 			
 		// 파일을 선택하면 이미지가 나타나는 부분
 		$('#filename').change(function(){
@@ -133,30 +144,47 @@
 				data: data,
 				success: function(result) {
 					console.log(result);
-					let tr = $('<tr />').append(val(result.num),
-										val(result.author),
-										val(result.file_Name),
-										val(result.title),
-										val(result.day));
-							$('#tbl').append$('tr');
-						},
+				},
 				error: function(err) {
 					console.log(err);
 				}
 			});
 		});
+		
+		
+		//수정버튼 클릭 이벤트
+		$('#modifyBtn').click(function (e) {
+			e.preventDefault();
+			let frm = document.getElementById('frm');
+			let data = new FormData(frm);
+			
+			// ajax 비동기방식 호출
+			$.ajax({
+				contentType: false,  // 폼타입을 불러올때 써야한다
+				processData: false,
+				url: '../fileModifyServlet',
+				data: data,
+				dataType: 'json',
+				type: 'post',
+				success: function(result){
+					if(result.retCode == 'Success'){
+						window.alert('정상 수정됨.');	
+						// 화면에도 수정 되도록
+						
+					}else {
+						window.alert('수정 예외 발생.');	
+					}
+				},
+				error: function(err) {
+					console.log(err)
+				}
+			});
+			
+		});
+		
 	});
 	</script>
-<style>
-#img {
-	width: 180px;
-	height: 220px;
-}
 
-table {
-	border-collapse: collapse;
-}
-</style>
 </head>
 
 <body>
@@ -183,8 +211,9 @@ table {
 				<td><input type="file" name="filename" id="filename"></td>
 			</tr>
 			<tr>
-				<td colspan="3"><input type="submit"><input
-					type="reset"></td>
+				<td colspan="3"><input type="submit" value="Submit"> <input
+					type="reset" value="Reset">
+					<button id="modifyBtn">수정</button></td>
 			</tr>
 		</table>
 		<br>
